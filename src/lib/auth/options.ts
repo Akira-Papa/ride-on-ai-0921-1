@@ -33,13 +33,18 @@ export const authOptions: NextAuthOptions = {
 
       await connectMongo();
 
+      const email = (profile.email ?? user.email)?.toLowerCase();
+      if (!email) {
+        return false;
+      }
+
       const persistedUser = await UserModel.findOneAndUpdate(
         { providerId: profile.sub as string },
         {
           $set: {
             providerId: profile.sub,
-            email: profile.email ?? user.email,
-            name: profile.name ?? user.name ?? "",
+            email,
+            name: profile.name ?? user.name ?? email,
             image: profile.picture ?? user.image,
           },
         },

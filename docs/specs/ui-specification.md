@@ -45,6 +45,7 @@
 - 投稿一覧は無限スクロール (IntersectionObserver) + Skeleton ローディング。
 - 投稿詳細は Markdown でレンダリング (安全な `marked` + DOMPurify equivalent→ `sanitize-html`).
 - 戻るナビゲーションは `Link` + `prefetch`。
+- ヘッダー検索フィールドでタイトル/本文検索、タグ Chip クリックで `?tag=` フィルターを付与。
 
 ## アクセシビリティ
 - すべてのボタン/リンクに `aria-label`。

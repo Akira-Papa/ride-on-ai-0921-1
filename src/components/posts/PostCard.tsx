@@ -16,8 +16,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState, useTransition } from 'react';
 
@@ -29,13 +28,12 @@ async function updateReaction(
   type: 'like' | 'bookmark',
   enable: boolean,
 ) {
-  const response = await fetch(`/api/posts/${postId}/reactions`, {
-    method: enable ? 'POST' : 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `/api/posts/${postId}/reactions?type=${type}`,
+    {
+      method: enable ? 'POST' : 'DELETE',
     },
-    body: JSON.stringify({ type }),
-  });
+  );
   if (!response.ok) {
     const result = await response.json().catch(() => null);
     throw new Error(result?.error?.message ?? 'Failed to update reaction');
@@ -48,13 +46,22 @@ type PostCardProps = {
 
 export function PostCard({ post }: PostCardProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [reactions, setReactions] = useState(post.reactions);
   const feedback = useFeedback();
   const tPosts = useTranslations('posts');
+  const tFeedback = useTranslations('feedback');
 
   const handleNavigate = () => {
     router.push(`/posts/${post.id}`);
+  };
+
+  const handleTagNavigate = (tag: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tag', tag);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleToggleReaction = (type: 'like' | 'bookmark') => {
@@ -80,14 +87,9 @@ export function PostCard({ post }: PostCardProps) {
     startTransition(async () => {
       try {
         await updateReaction(post.id, type, enable);
-        feedback.showSuccess(
-          type === 'like'
-            ? tPosts('reactions.like')
-            : tPosts('reactions.bookmark'),
-        );
       } catch (error) {
         console.error(error);
-        feedback.showError('リアクションの更新に失敗しました');
+        feedback.showError(tFeedback('errorGeneric'));
         setReactions(previous);
       }
     });
@@ -116,7 +118,16 @@ export function PostCard({ post }: PostCardProps) {
           {post.tags.length > 0 && (
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               {post.tags.map((tag) => (
-                <Chip key={tag} label={`#${tag}`} size="small" />
+                <Chip
+                  key={tag}
+                  label={`#${tag}`}
+                  size="small"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleTagNavigate(tag);
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                />
               ))}
             </Stack>
           )}

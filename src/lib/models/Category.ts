@@ -23,9 +23,6 @@ const categorySchema = new Schema(
   }
 );
 
-categorySchema.index({ slug: 1 }, { unique: true });
-categorySchema.index({ name: 1 });
-
 export type CategoryDocument = InferSchemaType<typeof categorySchema> & {
   _id: Schema.Types.ObjectId;
 };

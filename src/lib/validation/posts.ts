@@ -47,6 +47,7 @@ export type UpdatePostInput = z.infer<typeof updatePostSchema>;
 export const postsQuerySchema = z.object({
   category: z.string().optional(),
   search: z.string().optional(),
+  tag: z.string().optional(),
   cursor: z.string().optional(),
   limit: z
     .string()

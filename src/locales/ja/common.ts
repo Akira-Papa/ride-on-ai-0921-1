@@ -17,6 +17,7 @@ export const commonMessages = {
     createPost: "新規投稿",
     myPosts: "自分の投稿",
     all: "すべて",
+    search: "検索",
   },
   posts: {
     feedTitle: "最新の教訓",
@@ -55,19 +56,39 @@ export const commonMessages = {
     errorGeneric: "予期せぬエラーが発生しました",
   },
   validation: {
-    "title.min": "タイトルは3文字以上で入力してください",
-    "title.max": "タイトルは120文字以内で入力してください",
-    "lesson.min": "教訓は10文字以上で入力してください",
-    "lesson.max": "教訓は2000文字以内で入力してください",
-    "context.max": "状況説明は1000文字以内で入力してください",
-    "category.required": "カテゴリを選択してください",
-    "tags.max": "タグは最大5つまでです",
-    "tag.min": "タグは1文字以上で入力してください",
-    "tag.max": "タグは30文字以内で入力してください",
-    "limit.range": "取得件数は1〜50件で指定してください",
-    "post.required": "投稿IDが必要です",
-    "reaction.invalid": "リアクションの種類が不正です",
-    "id.required": "IDが不正です",
+    title: {
+      min: "タイトルは3文字以上で入力してください",
+      max: "タイトルは120文字以内で入力してください",
+    },
+    lesson: {
+      min: "教訓は10文字以上で入力してください",
+      max: "教訓は2000文字以内で入力してください",
+    },
+    context: {
+      max: "状況説明は1000文字以内で入力してください",
+    },
+    category: {
+      required: "カテゴリを選択してください",
+    },
+    tags: {
+      max: "タグは最大5つまでです",
+    },
+    tag: {
+      min: "タグは1文字以上で入力してください",
+      max: "タグは30文字以内で入力してください",
+    },
+    limit: {
+      range: "取得件数は1〜50件で指定してください",
+    },
+    post: {
+      required: "投稿IDが必要です",
+    },
+    reaction: {
+      invalid: "リアクションの種類が不正です",
+    },
+    id: {
+      required: "IDが不正です",
+    },
   },
   errors: {
     unauthorized: "認証が必要です",

@@ -4,6 +4,7 @@ import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -15,12 +16,10 @@ import Logout from '@mui/icons-material/Logout';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { signOut } from 'next-auth/react';
-import { useState } from 'react';
-
-import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 type Category = {
   id: string;
@@ -42,6 +41,9 @@ export function AppHeader({ categories, user, onToggleSidebar }: AppHeaderProps)
   const tNav = useTranslations('navigation');
   const tAuth = useTranslations('auth');
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('q') ?? '');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [categoryAnchor, setCategoryAnchor] = useState<null | HTMLElement>(null);
 
@@ -74,6 +76,22 @@ export function AppHeader({ categories, user, onToggleSidebar }: AppHeaderProps)
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/login' });
+  };
+
+  useEffect(() => {
+    setSearch(searchParams.get('q') ?? '');
+  }, [searchParams]);
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const params = new URLSearchParams(searchParams.toString());
+    if (search.trim().length > 0) {
+      params.set('q', search.trim());
+    } else {
+      params.delete('q');
+    }
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
   };
 
   return (
@@ -134,6 +152,36 @@ export function AppHeader({ categories, user, onToggleSidebar }: AppHeaderProps)
           </Menu>
         </Box>
         <Box sx={{ flexGrow: 1 }} />
+        <Box
+          component="form"
+          onSubmit={handleSearchSubmit}
+          sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, alignItems: 'center' }}
+        >
+          <TextField
+            size="small"
+            placeholder="検索..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            inputProps={{ 'aria-label': tNav('search') }}
+          />
+          <Button type="submit" variant="outlined" color="inherit">
+            検索
+          </Button>
+        </Box>
+        <Box
+          component="form"
+          onSubmit={handleSearchSubmit}
+          sx={{ display: { xs: 'block', md: 'none' } }}
+        >
+          <TextField
+            size="small"
+            placeholder="検索..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            sx={{ width: 160 }}
+            inputProps={{ 'aria-label': tNav('search') }}
+          />
+        </Box>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Button
             color="secondary"
@@ -143,6 +191,15 @@ export function AppHeader({ categories, user, onToggleSidebar }: AppHeaderProps)
           >
             {tNav('createPost')}
           </Button>
+        </Box>
+        <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+          <IconButton
+            color="inherit"
+            aria-label={tNav('createPost')}
+            onClick={handleCreatePost}
+          >
+            <AddCircleOutline />
+          </IconButton>
         </Box>
         <Tooltip title={user.email ?? ''}>
           <IconButton onClick={handleMenu} size="small" aria-haspopup="true">

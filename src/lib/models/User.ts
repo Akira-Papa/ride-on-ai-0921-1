@@ -12,7 +12,6 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       lowercase: true,
-      index: true,
     },
     name: {
       type: String,
@@ -31,8 +30,5 @@ const userSchema = new Schema(
 export type UserDocument = InferSchemaType<typeof userSchema> & {
   _id: Schema.Types.ObjectId;
 };
-
-userSchema.index({ email: 1 }, { unique: true });
-userSchema.index({ providerId: 1 }, { unique: true });
 
 export const UserModel = models.User ?? model("User", userSchema);

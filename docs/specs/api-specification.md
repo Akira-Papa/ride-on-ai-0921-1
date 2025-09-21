@@ -69,7 +69,7 @@
 - エラー: 400 (validation), 409 (duplicate), 401 (auth), 500 (server)
 
 ## GET /api/posts
-- クエリ: `category`, `cursor`, `limit`
+- クエリ: `category`, `cursor`, `limit`, `search`, `tag`
 - レスポンス 200:
 ```json
 {
@@ -124,15 +124,10 @@
 
 ## POST /api/posts/[id]/reactions
 - 説明: リアクション追加
-- リクエスト:
-```json
-{
-  "type": "like"
-}
-```
+- クエリ: `type=like|bookmark`
 - レスポンス 201:
 ```json
-{"reaction": {"id": "...", "type": "like"}}
+{"reaction": {"postId": "...", "type": "like"}}
 ```
 
 ## DELETE /api/posts/[id]/reactions

@@ -63,7 +63,7 @@ export function PostList({ initialPosts, initialCursor, query = {} }: PostListPr
     } finally {
       setIsFetching(false);
     }
-  }, [nextCursor, isFetching, query, feedback]);
+  }, [nextCursor, isFetching, query, feedback, tStatus]);
 
   useEffect(() => {
     setPosts(initialPosts);

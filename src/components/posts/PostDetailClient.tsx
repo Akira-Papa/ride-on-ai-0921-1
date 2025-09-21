@@ -27,13 +27,12 @@ async function updateReaction(
   type: 'like' | 'bookmark',
   enable: boolean,
 ) {
-  const response = await fetch(`/api/posts/${postId}/reactions`, {
-    method: enable ? 'POST' : 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `/api/posts/${postId}/reactions?type=${type}`,
+    {
+      method: enable ? 'POST' : 'DELETE',
     },
-    body: JSON.stringify({ type }),
-  });
+  );
   if (!response.ok) {
     const payload = await response.json().catch(() => null);
     throw new Error(payload?.error?.message ?? 'Failed to update reaction');
@@ -53,6 +52,26 @@ export function PostDetailClient({ post, sanitizedLesson, isOwner }: PostDetailC
   const feedback = useFeedback();
   const tPosts = useTranslations('posts');
   const tFeedback = useTranslations('feedback');
+  const tErrors = useTranslations('errors');
+
+  const resolveMessage = (message?: string) => {
+    if (!message) {
+      return tFeedback('errorGeneric');
+    }
+    if (message.startsWith('feedback.')) {
+      return tFeedback(message.replace('feedback.', ''));
+    }
+    if (message.startsWith('errors.')) {
+      return tErrors(message.replace('errors.', ''));
+    }
+    return message;
+  };
+
+  const handleTagNavigate = (tag: string) => {
+    const params = new URLSearchParams();
+    params.set('tag', tag);
+    router.push(`/dashboard?${params.toString()}`);
+  };
 
   const handleToggleReaction = (type: 'like' | 'bookmark') => {
     const previous = reactions;
@@ -93,7 +112,7 @@ export function PostDetailClient({ post, sanitizedLesson, isOwner }: PostDetailC
         router.push('/dashboard');
         return;
       }
-      feedback.showError(result.message ?? tFeedback('errorGeneric'));
+      feedback.showError(resolveMessage(result.message));
     });
   };
 
@@ -122,7 +141,13 @@ export function PostDetailClient({ post, sanitizedLesson, isOwner }: PostDetailC
       {post.tags.length > 0 && (
         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
           {post.tags.map((tag) => (
-            <Chip key={tag} label={`#${tag}`} variant="outlined" />
+            <Chip
+              key={tag}
+              label={`#${tag}`}
+              variant="outlined"
+              onClick={() => handleTagNavigate(tag)}
+              sx={{ cursor: 'pointer' }}
+            />
           ))}
         </Stack>
       )}

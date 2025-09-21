@@ -5,46 +5,12 @@ import { revalidatePath } from "next/cache";
 import { requireServerSession } from "@/lib/auth/session";
 import { createPost, deletePost, updatePost } from "@/lib/services/postService";
 import { AppError } from "@/lib/utils/errors";
+import { mapZodErrors, extractPostForm, mapAppErrorToMessage } from "./action-helpers";
+import type { ActionState } from "./action-helpers";
 import {
   createPostSchema,
   updatePostSchema,
 } from "@/lib/validation/posts";
-
-import type { ZodError } from "zod";
-
-export type ActionState = {
-  status: "idle" | "success" | "error";
-  message?: string;
-  errors?: Record<string, string>;
-  postId?: string;
-};
-
-export const INITIAL_STATE: ActionState = { status: "idle" };
-
-function mapZodErrors(error: ZodError): Record<string, string> {
-  const flatten = error.flatten();
-  const mapped: Record<string, string> = {};
-  Object.entries(flatten.fieldErrors).forEach(([key, messages]) => {
-    if (messages && messages.length > 0) {
-      mapped[key] = messages[0];
-    }
-  });
-  if (flatten.formErrors.length > 0) {
-    mapped._form = flatten.formErrors[0];
-  }
-  return mapped;
-}
-
-function extractPostForm(formData: FormData) {
-  return {
-    title: formData.get("title")?.toString() ?? "",
-    lesson: formData.get("lesson")?.toString() ?? "",
-    situationalContext: formData.get("situationalContext")?.toString() ?? "",
-    categoryId: formData.get("categoryId")?.toString() ?? "",
-    tags: formData.getAll("tags").map((tag) => tag.toString()),
-    visibility: formData.get("visibility")?.toString() ?? "member",
-  };
-}
 
 export async function createPostAction(
   _prevState: ActionState,
@@ -72,7 +38,7 @@ export async function createPostAction(
     if (error instanceof AppError) {
       return {
         status: "error",
-        message: error.code,
+        message: mapAppErrorToMessage(error),
       };
     }
     console.error(error);
@@ -112,7 +78,7 @@ export async function updatePostAction(
     if (error instanceof AppError) {
       return {
         status: "error",
-        message: error.code,
+        message: mapAppErrorToMessage(error),
       };
     }
     console.error(error);
@@ -133,7 +99,7 @@ export async function deletePostAction(postId: string): Promise<ActionState> {
     if (error instanceof AppError) {
       return {
         status: "error",
-        message: error.code,
+        message: mapAppErrorToMessage(error),
       };
     }
     console.error(error);

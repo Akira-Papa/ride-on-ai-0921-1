@@ -182,6 +182,10 @@ export async function listPosts(
     filter.$text = { $search: query.search };
   }
 
+  if (query.tag) {
+    filter.tags = query.tag;
+  }
+
   if (query.cursor) {
     filter._id = { $lt: toObjectId(query.cursor) };
   }

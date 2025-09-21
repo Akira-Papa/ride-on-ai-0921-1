@@ -10,8 +10,6 @@ import Lightbulb from '@mui/icons-material/Lightbulb';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
-import type { ReactNode } from 'react';
-
 type Category = {
   id: string;
   name: string;
