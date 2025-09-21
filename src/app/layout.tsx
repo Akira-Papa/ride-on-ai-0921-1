@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Merriweather, Roboto } from "next/font/google";
-import { getServerSession } from "next-auth";
 
 import { AppProviders } from "@/components/providers/AppProviders";
 import "./globals.css";
-import { authOptions } from "@/lib/auth/options";
+import { getServerAuthSession } from "@/lib/auth/session";
 import { defaultLocale, getMessages } from "@/lib/i18n/config";
 
 const headingFont = Merriweather({
@@ -32,7 +31,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   const messages = await getMessages();
 
   return (

@@ -1,10 +1,8 @@
-import { getServerSession } from "next-auth";
-
-import { authOptions } from "@/lib/auth/options";
+import { getServerAuthSession } from "@/lib/auth/session";
 import { jsonError, jsonOk } from "@/lib/utils/apiResponse";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session) {
     return jsonError({
       status: 401,

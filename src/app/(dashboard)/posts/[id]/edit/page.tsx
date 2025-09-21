@@ -15,10 +15,11 @@ export const metadata: Metadata = {
 export default async function EditPostPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const session = await requireServerSession();
-  const post = await getPostById(params.id, session.user.id);
+  const { id } = await params;
+  const post = await getPostById(id, session.user.id);
 
   if (!post) {
     notFound();

@@ -99,6 +99,10 @@ export function PostForm({ categories, mode, defaultValue }: PostFormProps) {
   };
 
   const fieldError = (name: string) => state.errors?.[name];
+  const fieldErrorMessage = (name: string) => {
+    const message = fieldError(name);
+    return message ? tValidation(message) : undefined;
+  };
 
   return (
     <form action={formAction}>
@@ -122,7 +126,7 @@ export function PostForm({ categories, mode, defaultValue }: PostFormProps) {
           defaultValue={defaultValue?.title ?? ''}
           required
           error={Boolean(fieldError('title'))}
-          helperText={fieldError('title') && tValidation(fieldError('title'))}
+          helperText={fieldErrorMessage('title')}
           inputProps={{ maxLength: 120 }}
         />
         <FormControl fullWidth>
@@ -144,9 +148,9 @@ export function PostForm({ categories, mode, defaultValue }: PostFormProps) {
               </MenuItem>
             ))}
           </Select>
-          {fieldError('categoryId') && (
+          {fieldErrorMessage('categoryId') && (
             <FormHelperText error>
-              {tValidation(fieldError('categoryId'))}
+              {fieldErrorMessage('categoryId')}
             </FormHelperText>
           )}
         </FormControl>
@@ -159,7 +163,7 @@ export function PostForm({ categories, mode, defaultValue }: PostFormProps) {
           multiline
           minRows={6}
           error={Boolean(fieldError('lesson'))}
-          helperText={fieldError('lesson') && tValidation(fieldError('lesson'))}
+          helperText={fieldErrorMessage('lesson')}
         />
         <TextField
           name="situationalContext"
@@ -169,10 +173,7 @@ export function PostForm({ categories, mode, defaultValue }: PostFormProps) {
           multiline
           minRows={3}
           error={Boolean(fieldError('situationalContext'))}
-          helperText={
-            fieldError('situationalContext') &&
-            tValidation(fieldError('situationalContext'))
-          }
+          helperText={fieldErrorMessage('situationalContext')}
         />
         <Box>
           <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -212,9 +213,9 @@ export function PostForm({ categories, mode, defaultValue }: PostFormProps) {
               追加
             </Button>
           </Box>
-          {fieldError('tags') && (
+          {fieldErrorMessage('tags') && (
             <FormHelperText error>
-              {tValidation(fieldError('tags'))}
+              {fieldErrorMessage('tags')}
             </FormHelperText>
           )}
         </Box>

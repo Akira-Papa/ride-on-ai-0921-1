@@ -5,18 +5,19 @@ import { notFound } from "next/navigation";
 
 import { PostList } from "@/components/posts/PostList";
 import { requireServerSession } from "@/lib/auth/session";
+import type { AuthSession } from "@/lib/auth/session";
 import { getCategoryBySlug } from "@/lib/services/categoryService";
 import { listPosts } from "@/lib/services/postService";
 
 type CategoryPageProps = {
-  params: { slug: string };
-  searchParams?: { q?: string; tag?: string };
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ q?: string; tag?: string }>;
 };
 
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const category = await getCategoryBySlug(slug);
   if (!category) {
     return {
@@ -30,8 +31,9 @@ export async function generateMetadata({
 }
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
-  const { slug } = params;
-  const session = await requireServerSession();
+  const { slug } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const session: AuthSession = await requireServerSession();
   const category = await getCategoryBySlug(slug);
 
   if (!category) {
@@ -42,8 +44,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     {
       limit: 10,
       category: category.slug,
-      search: searchParams?.q,
-      tag: searchParams?.tag,
+      search: resolvedSearchParams?.q,
+      tag: resolvedSearchParams?.tag,
     },
     session.user.id
   );
@@ -63,8 +65,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         initialCursor={nextCursor}
         query={{
           category: category.slug,
-          search: searchParams?.q ?? undefined,
-          tag: searchParams?.tag ?? undefined,
+          search: resolvedSearchParams?.q ?? undefined,
+          tag: resolvedSearchParams?.tag ?? undefined,
         }}
       />
     </Box>

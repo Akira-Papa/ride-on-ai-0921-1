@@ -1,7 +1,5 @@
 import { NextRequest } from "next/server";
-import { getServerSession } from "next-auth";
-
-import { authOptions } from "@/lib/auth/options";
+import { getServerAuthSession } from "@/lib/auth/session";
 import {
   deletePost,
   getPostById,
@@ -13,9 +11,9 @@ import { updatePostSchema } from "@/lib/validation/posts";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session) {
     return jsonError({
       status: 401,
@@ -24,7 +22,8 @@ export async function GET(
     });
   }
 
-  const post = await getPostById(params.id, session.user.id);
+  const { id } = await params;
+  const post = await getPostById(id, session.user.id);
   if (!post) {
     return jsonError({
       status: 404,
@@ -38,9 +37,9 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session) {
     return jsonError({
       status: 401,
@@ -51,7 +50,8 @@ export async function PUT(
 
   try {
     const payload = await request.json();
-    const parsed = updatePostSchema.safeParse({ ...payload, id: params.id });
+    const { id } = await params;
+    const parsed = updatePostSchema.safeParse({ ...payload, id });
     if (!parsed.success) {
       return jsonError({
         status: 400,
@@ -87,9 +87,9 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session) {
     return jsonError({
       status: 401,
@@ -99,7 +99,8 @@ export async function DELETE(
   }
 
   try {
-    await deletePost(params.id, session.user.id);
+    const { id } = await params;
+    await deletePost(id, session.user.id);
     return jsonNoContent();
   } catch (error) {
     if (error instanceof AppError) {

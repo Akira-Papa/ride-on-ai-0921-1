@@ -12,18 +12,19 @@ export const metadata: Metadata = {
 };
 
 type DashboardPageProps = {
-  searchParams?: { q?: string; tag?: string };
+  searchParams?: Promise<{ q?: string; tag?: string }>;
 };
 
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const session = await requireServerSession();
   const { posts, nextCursor } = await listPosts(
     {
       limit: 10,
-      search: searchParams?.q,
-      tag: searchParams?.tag,
+      search: resolvedSearchParams?.q,
+      tag: resolvedSearchParams?.tag,
     },
     session.user.id
   );
@@ -36,7 +37,7 @@ export default async function DashboardPage({
       <PostList
         initialPosts={posts}
         initialCursor={nextCursor}
-        query={{ search: searchParams?.q ?? undefined, tag: searchParams?.tag ?? undefined }}
+        query={{ search: resolvedSearchParams?.q ?? undefined, tag: resolvedSearchParams?.tag ?? undefined }}
       />
     </Box>
   );

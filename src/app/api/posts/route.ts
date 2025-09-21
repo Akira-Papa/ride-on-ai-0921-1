@@ -1,7 +1,5 @@
 import { NextRequest } from "next/server";
-import { getServerSession } from "next-auth";
-
-import { authOptions } from "@/lib/auth/options";
+import { getServerAuthSession } from "@/lib/auth/session";
 import {
   createPost,
   listPosts,
@@ -11,7 +9,7 @@ import { jsonCreated, jsonError, jsonOk } from "@/lib/utils/apiResponse";
 import { createPostSchema, postsQuerySchema } from "@/lib/validation/posts";
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session) {
     return jsonError({
       status: 401,
@@ -35,7 +33,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session) {
     return jsonError({
       status: 401,

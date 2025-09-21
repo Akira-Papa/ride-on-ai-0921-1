@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/components/auth/LoginForm";
-import { authOptions } from "@/lib/auth/options";
+import { getServerAuthSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
   title: "ログイン | anotoki",
 };
 
 export default async function LoginPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (session) {
     redirect("/dashboard");
   }

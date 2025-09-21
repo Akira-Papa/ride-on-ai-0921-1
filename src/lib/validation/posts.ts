@@ -61,8 +61,6 @@ export type PostsQueryInput = z.infer<typeof postsQuerySchema>;
 
 export const reactionSchema = z.object({
   postId: z.string().min(1, "post.required"),
-  type: z.enum(["like", "bookmark"], {
-    errorMap: () => ({ message: "reaction.invalid" }),
-  }),
+  type: z.enum(["like", "bookmark"], { message: "reaction.invalid" }),
 });
 export type ReactionInput = z.infer<typeof reactionSchema>;

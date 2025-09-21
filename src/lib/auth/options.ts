@@ -33,19 +33,31 @@ export const authOptions: NextAuthOptions = {
 
       await connectMongo();
 
-      const email = (profile.email ?? user.email)?.toLowerCase();
-      if (!email) {
+      const profileData = profile as Record<string, unknown>;
+      const providerId =
+        typeof profileData.sub === "string" ? profileData.sub : undefined;
+      const profileEmail =
+        typeof profileData.email === "string" ? profileData.email : undefined;
+      const profileName =
+        typeof profileData.name === "string" ? profileData.name : undefined;
+      const profilePicture =
+        typeof profileData.picture === "string"
+          ? profileData.picture
+          : undefined;
+
+      const email = (profileEmail ?? user.email)?.toLowerCase();
+      if (!email || !providerId) {
         return false;
       }
 
       const persistedUser = await UserModel.findOneAndUpdate(
-        { providerId: profile.sub as string },
+        { providerId },
         {
           $set: {
-            providerId: profile.sub,
+            providerId,
             email,
-            name: profile.name ?? user.name ?? email,
-            image: profile.picture ?? user.image,
+            name: profileName ?? user.name ?? email,
+            image: profilePicture ?? user.image,
           },
         },
         { upsert: true, new: true, setDefaultsOnInsert: true }

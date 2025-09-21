@@ -14,7 +14,8 @@ export const INITIAL_STATE: ActionState = { status: 'idle' };
 export function mapZodErrors(error: ZodError): Record<string, string> {
   const flatten = error.flatten();
   const mapped: Record<string, string> = {};
-  Object.entries(flatten.fieldErrors).forEach(([key, messages]) => {
+  const fieldErrors = flatten.fieldErrors as Record<string, string[] | undefined>;
+  Object.entries(fieldErrors).forEach(([key, messages]) => {
     if (messages && messages.length > 0) {
       mapped[key] = messages[0];
     }

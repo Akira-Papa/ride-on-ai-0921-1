@@ -8,18 +8,20 @@ import { requireServerSession } from "@/lib/auth/session";
 import { getPostById } from "@/lib/services/postService";
 
 type PostDetailPageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function PostDetailPage({ params }: PostDetailPageProps) {
   const session = await requireServerSession();
-  const post = await getPostById(params.id, session.user.id);
+  const { id } = await params;
+  const post = await getPostById(id, session.user.id);
 
   if (!post) {
     notFound();
   }
 
-  const html = sanitizeHtml(marked.parse(post.lesson), {
+  const parsedLesson = await marked.parse(post.lesson);
+  const html = sanitizeHtml(parsedLesson, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(["h1", "h2", "img"]),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
