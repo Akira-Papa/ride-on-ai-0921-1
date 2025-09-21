@@ -23,8 +23,10 @@ export function EmotionCacheProvider({ children }: EmotionCacheProviderProps) {
     const prevInsert = emotionCache.insert;
     let inserted: string[] = [];
 
-    emotionCache.insert = (...args) => {
-      const [, serialized] = args as Parameters<typeof emotionCache.insert>;
+    emotionCache.insert = (
+      ...args: Parameters<typeof emotionCache.insert>
+    ): ReturnType<typeof emotionCache.insert> => {
+      const [, serialized] = args;
       if (emotionCache.inserted[serialized.name] === undefined) {
         inserted.push(serialized.name);
       }
