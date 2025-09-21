@@ -1,0 +1,82 @@
+export const commonMessages = {
+  app: {
+    name: "anotoki",
+    tagline: "あの時の学びを未来へ活かす",
+  },
+  auth: {
+    loginTitle: "Googleアカウントでログイン",
+    loginDescription:
+      "anotoki は会員制サービスです。Google 認証でログインしてください。",
+    loginButton: "Googleでログイン",
+    logout: "ログアウト",
+    sessionExpired: "セッションの有効期限が切れました。再度ログインしてください。",
+  },
+  navigation: {
+    dashboard: "ダッシュボード",
+    categories: "カテゴリ",
+    createPost: "新規投稿",
+    myPosts: "自分の投稿",
+    all: "すべて",
+  },
+  posts: {
+    feedTitle: "最新の教訓",
+    createTitle: "あの時の教訓を共有する",
+    editTitle: "投稿を編集",
+    detailTitle: "投稿詳細",
+    contextLabel: "どんな状況でしたか?",
+    visibilityMember: "会員に公開",
+    visibilityPrivate: "自分のみ",
+    lessonPlaceholder: "教訓を詳しく記入してください (Markdown対応)",
+    titlePlaceholder: "タイトル (例: 転職のタイミングを逃した話)",
+    tagsDescription: "タグは最大5つまで",
+    submit: "保存",
+    cancel: "キャンセル",
+    delete: "削除",
+    edit: "編集",
+    reactions: {
+      like: "共感",
+      bookmark: "あとで読む",
+    },
+  },
+  statuses: {
+    loading: "読み込み中...",
+    emptyFeedTitle: "まだ投稿がありません",
+    emptyFeedDescription: "最初の教訓を共有して、みんなの学びを始めましょう。",
+    allLoaded: "すべての投稿を読み込みました",
+    loadError: "投稿の取得に失敗しました",
+    retry: "再試行",
+  },
+  feedback: {
+    postCreated: "投稿を作成しました",
+    postUpdated: "投稿を更新しました",
+    postDeleted: "投稿を削除しました",
+    reactionAdded: "リアクションを追加しました",
+    reactionRemoved: "リアクションを解除しました",
+    errorGeneric: "予期せぬエラーが発生しました",
+  },
+  validation: {
+    "title.min": "タイトルは3文字以上で入力してください",
+    "title.max": "タイトルは120文字以内で入力してください",
+    "lesson.min": "教訓は10文字以上で入力してください",
+    "lesson.max": "教訓は2000文字以内で入力してください",
+    "context.max": "状況説明は1000文字以内で入力してください",
+    "category.required": "カテゴリを選択してください",
+    "tags.max": "タグは最大5つまでです",
+    "tag.min": "タグは1文字以上で入力してください",
+    "tag.max": "タグは30文字以内で入力してください",
+    "limit.range": "取得件数は1〜50件で指定してください",
+    "post.required": "投稿IDが必要です",
+    "reaction.invalid": "リアクションの種類が不正です",
+    "id.required": "IDが不正です",
+  },
+  errors: {
+    unauthorized: "認証が必要です",
+    forbidden: "この操作を行う権限がありません",
+    notFound: "リソースが見つかりませんでした",
+  },
+  categories: {
+    title: "カテゴリで探す",
+  },
+};
+
+export type CommonMessages = typeof commonMessages;
