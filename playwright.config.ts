@@ -14,14 +14,11 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   webServer: {
-    command: 'pnpm dev',
-    port: 3100,
+    command: 'pnpm exec next dev --turbopack --hostname 127.0.0.1 --port 3100',
+    url: 'http://127.0.0.1:3100',
     reuseExistingServer: !process.env.CI,
     stdout: 'pipe',
     stderr: 'pipe',
-    env: {
-      PORT: '3100',
-    },
   },
   projects: [
     {
