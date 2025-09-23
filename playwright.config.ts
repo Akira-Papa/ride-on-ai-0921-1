@@ -20,6 +20,7 @@ export default defineConfig({
     stdout: 'pipe',
     stderr: 'pipe',
   },
+  globalSetup: require.resolve('./tests/e2e/global-setup.ts'),
   projects: [
     {
       name: 'chromium',
